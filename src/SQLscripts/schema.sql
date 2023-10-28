@@ -38,9 +38,9 @@ CREATE TABLE Stock(
 
 -- TODO: makeusre driverID instead of driver
 CREATE TABLE Vehicle(
-    vechicleID INTEGER UNIQUE,
+    vehicleID INTEGER UNIQUE,
     type VARCHAR(50),
-    driverID INTEGER UNIQUE,
+    driverID INTEGER,
     capacity INTEGER DEFAULT 0,
     PRIMARY KEY (vehicleID),
     FOREIGN KEY (driverID) REFERENCES Employee(employeeID)
@@ -56,8 +56,7 @@ CREATE TABLE Vendor(
 );
 
 CREATE TABLE Product(
-    productID INTEGER NOT NULL,
-    vendorID INTEGER NOT NULL,
+    productID INTEGER UNIQUE,
     name VARCHAR(50),
     price INTEGER DEFAULT 0,
     description VARCHAR(200),
@@ -77,19 +76,20 @@ CREATE TABLE Sells(
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- Discuss purchases
 CREATE TABLE Purchases(
     facilityID INTEGER NOT NULL,
     productID INTEGER NOT NULL,
     amount INTEGER DEFUALT 0,
     unitPrice DECIMAL(7,2) DEFAULT 0,
+    date DATE DEFAULT NULL,
     PRIMARY KEY(facilityID, porductID),
     FOREIGN KEY (facilityID) REFERENCES Facility(facilityID),
     FOREIGN KEY (productID) REFERENCES Product(productID)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE Order(
+-- I set the name as Orders because Order is a key word
+CREATE TABLE Orders(
     orderID INTEGER UNIQUE,
     productID INTEGER NOT NULL,
     amount INTEGER DEFAULT 0,

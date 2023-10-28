@@ -38,8 +38,8 @@ NATURAL JOIN Stock AS S;
 
 -- Get the products that a vendor sends
 SELECT P*
-FROM Product AS P
-WHERE P.vendorID = reqVendorID;
+FROM Product AS P NATURAL JOIN Sells AS S
+WHERE S.vendorID = reqVendorID;
 
 -- Get the vendors who sell a certain product
 -- TODO: should I change this to P.name = reqName?
