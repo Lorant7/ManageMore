@@ -7,19 +7,18 @@
 -- primary and foreign keys
 
 CREATE TABLE Employee(
-    employeeID INTEGER UNIQUE,
-    name VARCHAR(50),
-    job_title VARCHAR(50),
-    salary DECIMAL(11,2) NOT NULL DEFAULT 0,
+    employeeID INTEGER UNIQUE NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    job_title VARCHAR(50) NOT NULL,
+    salary DECIMAL(11,2) NOT NULL CHECK (salary >= 0),
     facilityID INTEGER NOT NULL,
-    employee_type VARCHAR(50),
     PRIMARY KEY (employeeID),
     FOREIGN KEY (facilityID) REFERENCES Facility(facilityID)
         ON UPDATE CASCADE ON DELETE CASCADE
     );
 
 CREATE TABLE Facility(
-    facilityID INTEGER UNIQUE,
+    facilityID INTEGER UNIQUE NOT NULL,
     name VARCHAR(50),
     address VARCHAR(50),
     PRIMARY KEY (facilityID)
@@ -27,28 +26,28 @@ CREATE TABLE Facility(
 );
 
 CREATE TABLE Stock(
-    productID INTEGER,
-    amount INTEGER DEFAULT 0,
-    desired_amount INTEGER DEFAULT 0,
-    facilityID INTEGER,
+    productID INTEGER NOT NULL,
+    amount INTEGER DEFAULT 0 CHECK (amount >= 0) NOT NULL,
+    desired_amount INTEGER DEFAULT 0 CHECK (desired_amount >=0) NOT NULL,
+    facilityID INTEGER NOT NULL,
     PRIMARY KEY (productID, facilityID)
     FOREIGN KEY (facilityID) REFERENCES Facility(facilityID)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- TODO: makeusre driverID instead of driver
+
 CREATE TABLE Vehicle(
-    vehicleID INTEGER UNIQUE,
+    vehicleID INTEGER UNIQUE NOT NULL,
     type VARCHAR(50),
-    driverID INTEGER,
-    capacity INTEGER DEFAULT 0,
+    driverID INTEGER NOT NULL,
+    capacity INTEGER DEFAULT 0 CHECK (capacity >= 0) NOT NULL,
     PRIMARY KEY (vehicleID),
     FOREIGN KEY (driverID) REFERENCES Employee(employeeID)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Vendor(
-    vendorID INTEGER UNIQUE,
+    vendorID INTEGER UNIQUE NOT NULL,
     name VARCHAR(50) NOT NULL,
     address VARCHAR(50),
     PRIMARY KEY (vendorId)
@@ -56,9 +55,9 @@ CREATE TABLE Vendor(
 );
 
 CREATE TABLE Product(
-    productID INTEGER UNIQUE,
-    name VARCHAR(50),
-    price INTEGER DEFAULT 0,
+    productID INTEGER NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    price DECIMAL(11,2) DEFAULT 0 CHECK (price > 0) NOT NULL,
     description VARCHAR(200),
     image BLOB,
     PRIMARY KEY (productID)
@@ -69,7 +68,6 @@ CREATE TABLE Product(
 CREATE TABLE Sells(
     vendorID INTEGER NOT NULL,
     productID INTEGER NOT NULL,
-    price DECIMAL(7,2) DEFAULT 0,
     PRIMARY KEY (vendorID, productID),
     FOREIGN KEY (vendorID) REFERENCES Vendor(vendorID),
     FOREIGN KEY (productID) REFERENCES Product(productID)
@@ -79,9 +77,9 @@ CREATE TABLE Sells(
 CREATE TABLE Purchases(
     facilityID INTEGER NOT NULL,
     productID INTEGER NOT NULL,
-    amount INTEGER DEFUALT 0,
-    unitPrice DECIMAL(7,2) DEFAULT 0,
-    date DATE DEFAULT NULL,
+    amount INTEGER DEFUALT 0 CHECK (amount >= 0) NOT NULL,
+    unitPrice DECIMAL(7,2) DEFAULT 0 CHECK (unitPrice > 0) NOT NULL,
+    date DATE NOT NULL,
     PRIMARY KEY(facilityID, porductID),
     FOREIGN KEY (facilityID) REFERENCES Facility(facilityID),
     FOREIGN KEY (productID) REFERENCES Product(productID)
@@ -90,9 +88,10 @@ CREATE TABLE Purchases(
 
 -- I set the name as Orders because Order is a key word
 CREATE TABLE Orders(
-    orderID INTEGER UNIQUE,
+    orderID INTEGER UNIQUE NOT NULL,
     productID INTEGER NOT NULL,
-    amount INTEGER DEFAULT 0,
+    amount INTEGER DEFAULT 0 CHECK (amount > 0) NOT NULL,
+    date DATE NOT NULL,
     PRIMARY KEY (orderID)
     FOREIGN KEY (productID) REFERENCES Product(productID)
         ON UPDATE CASCADE ON DELETE CASCADE
