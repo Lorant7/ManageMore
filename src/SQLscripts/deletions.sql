@@ -5,6 +5,7 @@ WHERE employeeID = reqEmployeeID;
 DELETE FROM Employee
 WHERE name = reqName;
 
+
 -- Facility
 DELETE FROM Facility
 WHERE facilityID = reqFacilityID;

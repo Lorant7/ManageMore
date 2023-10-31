@@ -1,7 +1,14 @@
--- TODO: should I move all of the stock to another facility?
+
+-- Move stock from one facility to the other, then delete facility
+BEGIN TRANSACTION;
+
+UPDATE Stock
+SET facilityID = newFacilityID
+WHERE facilityID = oldFacilityID;
+
+-- Check with Java if the Stock was transfered, if it wasn't ROLLBACK
+
 DELETE FROM Facility
-WHERE facilityID = reqFacilityID 
-AND facilityID NOT IN(
-    SELECT facilityID
-    FROM Stock
-    );
+WHERE facilityID = oldFacilityID;
+
+COMMIT;

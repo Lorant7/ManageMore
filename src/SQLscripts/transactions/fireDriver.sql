@@ -1,5 +1,5 @@
 UPDATE Vehicle
-SET dirverID = NULL;
+SET driverID = NULL;
 
 DELETE FROM Employee
 WHERE employeeID = reqEmployeeID;

@@ -11,18 +11,34 @@ CREATE TABLE Employee(
     name VARCHAR(50) NOT NULL,
     job_title VARCHAR(50) NOT NULL,
     salary DECIMAL(11,2) NOT NULL CHECK (salary >= 0),
+    PRIMARY KEY (employeeID),
+    );
+
+CREATE TABLE Driver(
+    driverID INTEGER UNIQUE NOT NULL,
+    vehicleID INTEGER,
+    PRIMARY KEY (driverID),
+    FOREIGN KEY (driverID) REFERENCES Employee(employeeID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (vehicleID) REFERENCES Vehicle(vehicleID)
+        ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+-- TODO: check that there are no employees in a facility
+CREATE TABLE FacilityEmployee(
+    employeeID INTEGER UNIQUE NOT NULL,
     facilityID INTEGER NOT NULL,
+    position VARCHAR(50) NOT NULL,
     PRIMARY KEY (employeeID),
     FOREIGN KEY (facilityID) REFERENCES Facility(facilityID)
-        ON UPDATE CASCADE ON DELETE CASCADE
-    );
+        ON UPDATE CASCADE ON DELETE CASCADE;
+);  
 
 CREATE TABLE Facility(
     facilityID INTEGER UNIQUE NOT NULL,
     name VARCHAR(50),
     address VARCHAR(50),
     PRIMARY KEY (facilityID)
-        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Stock(
@@ -32,18 +48,18 @@ CREATE TABLE Stock(
     facilityID INTEGER NOT NULL,
     PRIMARY KEY (productID, facilityID)
     FOREIGN KEY (facilityID) REFERENCES Facility(facilityID)
-        ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 
 CREATE TABLE Vehicle(
     vehicleID INTEGER UNIQUE NOT NULL,
     type VARCHAR(50),
-    driverID INTEGER NOT NULL,
+    driverID INTEGER,
     capacity INTEGER DEFAULT 0 CHECK (capacity >= 0) NOT NULL,
     PRIMARY KEY (vehicleID),
     FOREIGN KEY (driverID) REFERENCES Employee(employeeID)
-        ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE Vendor(
@@ -51,7 +67,6 @@ CREATE TABLE Vendor(
     name VARCHAR(50) NOT NULL,
     address VARCHAR(50),
     PRIMARY KEY (vendorId)
-        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Product(
@@ -66,10 +81,11 @@ CREATE TABLE Product(
 );
 
 CREATE TABLE Sells(
-    vendorID INTEGER NOT NULL,
+    vendorID INTEGER,
     productID INTEGER NOT NULL,
     PRIMARY KEY (vendorID, productID),
-    FOREIGN KEY (vendorID) REFERENCES Vendor(vendorID),
+    FOREIGN KEY (vendorID) REFERENCES Vendor(vendorID)
+        ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY (productID) REFERENCES Product(productID)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -77,13 +93,14 @@ CREATE TABLE Sells(
 CREATE TABLE Purchases(
     facilityID INTEGER NOT NULL,
     productID INTEGER NOT NULL,
-    amount INTEGER DEFUALT 0 CHECK (amount >= 0) NOT NULL,
+    amount INTEGER DEFAULT 0 CHECK (amount >= 0) NOT NULL,
     unitPrice DECIMAL(7,2) DEFAULT 0 CHECK (unitPrice > 0) NOT NULL,
     date DATE NOT NULL,
-    PRIMARY KEY(facilityID, porductID),
-    FOREIGN KEY (facilityID) REFERENCES Facility(facilityID),
+    PRIMARY KEY(facilityID, productID, date),
+    FOREIGN KEY (facilityID) REFERENCES Facility(facilityID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (productID) REFERENCES Product(productID)
-        ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 -- I set the name as Orders because Order is a key word
@@ -92,7 +109,7 @@ CREATE TABLE Orders(
     productID INTEGER NOT NULL,
     amount INTEGER DEFAULT 0 CHECK (amount > 0) NOT NULL,
     date DATE NOT NULL,
-    PRIMARY KEY (orderID)
+    PRIMARY KEY (orderID),
     FOREIGN KEY (productID) REFERENCES Product(productID)
         ON UPDATE CASCADE ON DELETE CASCADE
 )
