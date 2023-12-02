@@ -8,12 +8,15 @@ package com.cescoandtomas.managemore;
  *
  * @author franc
  */
-public class DisplayPanel2 extends javax.swing.JPanel {
-
+public class InfoPanel extends javax.swing.JPanel {
+    //this panel displays specific information about an object.
+    //It will display information about itsself, it will allow modification of the values, and show dependencies on other tables.
+    
+    //it works by calling a sql statement that selects a tuple from the table in the Display Panel.
     /**
-     * Creates new form DisplayPanel2
+     * Creates new form InfoPanel
      */
-    public DisplayPanel2() {
+    public InfoPanel() {
         initComponents();
     }
 
