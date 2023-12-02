@@ -221,8 +221,8 @@ INSERT INTO Sells (vendorID, productID) VALUES
 
 
 -- Insert products
-INSERT INTO Product (productID, name, price, description, vendorID) VALUES
-(1, 'Laptop', 1200.00, 'Powerful laptop with high-end specifications.', 1),
+INSERT INTO Product (productID, name, price, description, vendorID, image) VALUES
+(1, 'Laptop', 1200.00, 'Powerful laptop with high-end specifications.', 1, 0x[SELECT HEX(image_data) FROM your_table WHERE condition]),
 (2, 'Smartphone', 800.00, 'Latest model with advanced features.', 2),
 (3, 'Desk Chair', 150.00, 'Ergonomic office chair for comfort.', 3),
 (4, 'LED TV', 700.00, 'Ultra HD Smart TV with a large display.', 4),
